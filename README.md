@@ -4,11 +4,14 @@ For developers staring at a failed CI run: paste a GitHub Actions log (or point 
 
 ## Quickstart
 
+Requires Python 3.10+ (CI-tested on 3.10–3.13). No install, no third-party
+dependencies:
+
 ```bash
 python -m buildfail_triage fixtures/test_failure.log
 ```
 
-That's it — no install, no dependencies, no API keys.
+That's it — no API keys, no network access.
 
 ## Demo walkthrough
 
