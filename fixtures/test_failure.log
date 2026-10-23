@@ -1,0 +1,14 @@
+$ python -m pytest -q
+................F.......
+=================================== FAILURES ===================================
+_______________________________ test_cart_total _______________________________
+tests/test_cart.py:42: in test_cart_total
+    assert total == 19.98
+E   AssertionError: assert 19.979999999999997 == 19.98
+tests/test_math.py:11: in test_add
+    assert add(1, 1) == 3
+E   assert 2 == 3
+FAILED tests/test_cart.py::test_cart_total - AssertionError: assert 19.979999999999997 == 19.98
+FAILED tests/test_math.py::test_add - assert 2 == 3
+2 failed, 23 passed in 1.42s
+##[error]Process completed with exit code 1.

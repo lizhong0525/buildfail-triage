@@ -1,0 +1,8 @@
+2026-10-22T09:15:10Z Run python scripts/deploy.py
+2026-10-22T09:15:11Z Loading configuration for environment: staging
+2026-10-22T09:15:11Z Error: Missing required environment variable: DATABASE_URL
+2026-10-22T09:15:11Z Traceback (most recent call last):
+2026-10-22T09:15:11Z   File "scripts/deploy.py", line 18, in <module>
+2026-10-22T09:15:11Z     api_key = os.environ["API_KEY"]
+2026-10-22T09:15:11Z KeyError: 'API_KEY'
+2026-10-22T09:15:12Z ##[error]Process completed with exit code 1.

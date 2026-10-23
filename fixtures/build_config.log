@@ -1,0 +1,5 @@
+Invalid workflow file: .github/workflows/ci.yml#L12
+The workflow is not valid.
+.github/workflows/ci.yml (Line: 12, Col: 5): Unexpected value 'runs-onn'
+.github/workflows/ci.yml (Line: 28, Col: 9): A mapping was not expected
+##[error]Process completed with exit code 1.

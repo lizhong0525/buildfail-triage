@@ -1,0 +1,9 @@
+2026-10-22T14:01:02Z Run pip install -r requirements.txt
+2026-10-22T14:01:03Z Collecting requests==2.31.0
+2026-10-22T14:01:03Z   Downloading requests-2.31.0-py3-none-any.whl (62 kB)
+2026-10-22T14:01:04Z Collecting flask==9.9.9
+2026-10-22T14:01:04Z ERROR: Could not find a version that satisfies the requirement flask==9.9.9 (from versions: 0.1, 1.0, 1.1.4, 2.0.3, 2.2.5, 2.3.3, 3.0.0)
+2026-10-22T14:01:04Z ERROR: No matching distribution found for flask==9.9.9
+2026-10-22T14:01:05Z WARNING: pip is configured with locations that require TLS/SSL, however the ssl module in Python is not available.
+2026-10-22T14:01:05Z Using token ghp_1234567890abcdefghijklmnopqrstuvwx for git sync (SYNTHETIC FIXTURE TOKEN - NOT A REAL SECRET)
+2026-10-22T14:01:06Z ##[error]Process completed with exit code 1.
