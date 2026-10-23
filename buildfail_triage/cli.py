@@ -74,7 +74,24 @@ def build_parser() -> argparse.ArgumentParser:
     return parser
 
 
+def _harden_console() -> None:
+    """Never let a non-UTF-8 console codepage crash report printing.
+
+    Log excerpts can contain characters (e.g. ``✕``) that encodings like
+    GBK cannot represent; replace them instead of raising UnicodeEncodeError.
+    """
+    for stream in (sys.stdout, sys.stderr):
+        reconfigure = getattr(stream, "reconfigure", None)
+        if reconfigure is None:
+            continue
+        try:
+            reconfigure(errors="replace")
+        except (ValueError, OSError):
+            pass
+
+
 def main(argv: list[str] | None = None) -> int:
+    _harden_console()
     args = build_parser().parse_args(argv)
 
     try:

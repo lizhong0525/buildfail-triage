@@ -55,6 +55,23 @@ class TestCliHappyPath(unittest.TestCase):
             self.assertNotIn("ghp_1234567890", err)
             self.assertIn("***REDACTED_GITHUB_TOKEN***", out)
 
+    def test_unicode_log_content_does_not_crash(self):
+        # Logs containing characters outside the console codepage (e.g. the
+        # ✕/✗ markers the test-failure rule itself matches) must not crash
+        # report printing on Windows GBK consoles.
+        with tempfile.NamedTemporaryFile(
+            "w", suffix=".log", delete=False, encoding="utf-8"
+        ) as fh:
+            fh.write("Test Suites: 1 failed\n ✕ adds numbers (5 ms)\n")
+            path = fh.name
+        try:
+            for fmt in ("markdown", "json"):
+                code, out, err = run_cli([path, "--format", fmt])
+                self.assertEqual(code, 0, err)
+                self.assertIn("Test failure", out)
+        finally:
+            os.unlink(path)
+
 
 class TestCliFailurePaths(unittest.TestCase):
     def test_missing_file_exits_2(self):
@@ -157,6 +174,39 @@ class TestCliGitContext(unittest.TestCase):
                 "not evidence of causation",
                 parsed["git_context"]["disclaimer"],
             )
+
+    def test_git_dir_with_non_ascii_commit_survives(self):
+        # git log output is UTF-8; decoding it with the locale encoding
+        # (GBK on a Chinese Windows box) used to crash the whole CLI.
+        with tempfile.TemporaryDirectory() as tmp:
+            import subprocess
+
+            env = dict(os.environ)
+            env.update(
+                {
+                    "GIT_AUTHOR_NAME": "中 李",
+                    "GIT_AUTHOR_EMAIL": "test@example.com",
+                    "GIT_COMMITTER_NAME": "中 李",
+                    "GIT_COMMITTER_EMAIL": "test@example.com",
+                    "LANG": "C.UTF-8",
+                }
+            )
+            subprocess.run(["git", "-C", tmp, "init", "-q"], check=True)
+            with open(os.path.join(tmp, "a.txt"), "w") as fh:
+                fh.write("x")
+            subprocess.run(["git", "-C", tmp, "add", "a.txt"], check=True, env=env)
+            subprocess.run(
+                ["git", "-C", tmp, "commit", "-qm", "修复 cart 总计"],
+                check=True,
+                env=env,
+            )
+            path = os.path.join(FIXTURES, "test_failure.log")
+            code, out, err = run_cli([path, "--git-dir", tmp, "--format", "json"])
+            self.assertEqual(code, 0, err)
+            parsed = json.loads(out)
+            commit = parsed["git_context"]["recent_commits"][0]
+            self.assertEqual(commit["subject"], "修复 cart 总计")
+            self.assertEqual(commit["author"], "中 李")
 
 
 if __name__ == "__main__":

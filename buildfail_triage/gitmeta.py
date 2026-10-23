@@ -43,15 +43,19 @@ def recent_commits(repo: str, count: int = 5) -> list[dict[str, str]] | None:
                 "--date=short",
             ],
             capture_output=True,
-            text=True,
+            # git writes log output as UTF-8; decoding with the locale
+            # encoding (e.g. GBK on Windows) crashes on non-ASCII commits.
+            encoding="utf-8",
+            errors="replace",
             timeout=10,
         )
     except (OSError, subprocess.TimeoutExpired):
         return None
-    if proc.returncode != 0 or not proc.stdout.strip():
+    stdout = proc.stdout or ""
+    if proc.returncode != 0 or not stdout.strip():
         return None
     commits = []
-    for line in proc.stdout.strip().splitlines():
+    for line in stdout.strip().splitlines():
         parts = line.split("|", 3)
         if len(parts) != 4:
             continue
